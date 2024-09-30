@@ -1,0 +1,24 @@
+<!-- mymodel_list.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список объектов MyModel</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Список объектов MyModel</h1>
+    <a href="{% url 'students:mymodel_create' %}" class="btn btn-primary mb-3">Создать новый объект</a>
+    <ul class="list-group">
+        {% for mymodel in mymodels %}
+        <li class="list-group-item">
+            <a href="{% url 'students:mymodel_detail' mymodel.pk %}" class="btn btn-primary">{{ mymodel.name }}</a>
+            <a href="{% url 'students:mymodel_edit' mymodel.pk %}" class="btn btn-sm btn-secondary ml-3">Редактировать</a>
+            <a href="{% url 'students:mymodel_delete' mymodel.pk %}" class="btn btn-sm btn-danger ml-1">Удалить</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

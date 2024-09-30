@@ -1,10 +1,10 @@
 <!-- students_list.html -->
-{% extends 'base.html' %}
+{% extends 'students/base.html' %}
 
 {% block title %}Список студентов{% endblock %}
 
 {% block content %}
-{% include 'header.html' %}
+{% include 'students/header.html' %}
 <h2>Список студентов</h2>
 <ul class="list-group">
     {% for student in students %}

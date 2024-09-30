@@ -1,7 +1,41 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
+from students.models import Student, MyModel
 
-from students.models import Student
+
+class MyModelCreateView(CreateView):
+    model = MyModel
+    fields = ['name', 'description']
+    template_name = 'students/mymodel_form.html'
+    success_url = reverse_lazy('students:mymodel_list')
+
+
+class MyModelListView(ListView):
+    model = MyModel
+    template_name = 'students/mymodel_list.html'
+    context_object_name = 'mymodels'
+
+
+class MyModelDetailView(DetailView):
+    model = MyModel
+    template_name = 'students/mymodel_detail.html'
+    context_object_name = 'mymodel'
+
+
+class MyModelUpdateView(UpdateView):
+    model = MyModel
+    fields = ['name', 'description']
+    template_name = 'students/mymodel_form.html'
+    success_url = reverse_lazy('students:mymodel_list')
+
+
+class MyModelDeleteView(DeleteView):
+    model = MyModel
+    template_name = 'students/mymodel_confirm_delete.html'
+    success_url = reverse_lazy('students:mymodel_list')
 
 
 def about(request):
@@ -41,4 +75,3 @@ def student_list(request):
     students = Student.objects.all()
     context = {'students': students}
     return render(request, 'students/student_list.html', context)
-
