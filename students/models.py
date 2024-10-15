@@ -39,12 +39,14 @@ class Student(models.Model):
 
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
+    email = models.EmailField(verbose_name='Email')
     year = models.CharField(
         max_length=6,
         choices=YEAR_IN_SCHOOL_CHOICES,
         default=FIRST_YEAR,
         verbose_name='Курс'
     )
+    enrollment_date = models.DateField(verbose_name='Дата поступления')
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students')
 
     def __str__(self):

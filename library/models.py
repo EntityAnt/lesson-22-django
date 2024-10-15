@@ -18,7 +18,7 @@ class Author(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length=200, verbose_name='Название')
     publication_date = models.DateField(verbose_name='Дата публикации')
-    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books', verbose_name='Автор')
 
     def __str__(self):
         return self.title
