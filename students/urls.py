@@ -12,7 +12,7 @@ urlpatterns = [
     path('example/', views.example_view, name='example'),
     path('index/', views.index, name='index'),
     path('student_detail/<int:student_id>', views.student_detail, name='student_detail'),
-    path('student/', views.student_list, name='student_list'),
+    path('', views.student_list, name='student_list'),
     path('student/new/', views.StudentCreateView.as_view(), name='student_create'),
     path('student/<int:pk>/edit/', views.StudentUpdateView.as_view(), name='student_update'),
 

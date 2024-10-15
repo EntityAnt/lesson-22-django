@@ -47,7 +47,7 @@ class Student(models.Model):
         verbose_name='Курс'
     )
     enrollment_date = models.DateField(verbose_name='Дата поступления')
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students', verbose_name='Группа')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'

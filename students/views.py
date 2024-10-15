@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView
 from students.models import Student, MyModel
 from students.forms import StudentForm
 
+
 class StudentCreateView(CreateView):
     model = Student
     form_class = StudentForm
