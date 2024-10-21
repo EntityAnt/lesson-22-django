@@ -5,6 +5,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from students.models import Student, MyModel
 from students.forms import StudentForm
+from users.forms import CustomUserCreationForm
 
 
 class StudentCreateView(CreateView):
@@ -51,6 +52,12 @@ class MyModelDeleteView(DeleteView):
     model = MyModel
     template_name = 'students/mymodel_confirm_delete.html'
     success_url = reverse_lazy('students:mymodel_list')
+
+
+class RegisterView(CreateView):
+    template_name = 'register.html'
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('home')
 
 
 def about(request):

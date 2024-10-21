@@ -1,4 +1,7 @@
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
+
+from users.views import RegisterView
 from . import views
 from .views import MyModelCreateView, MyModelListView, MyModelDetailView, MyModelUpdateView, MyModelDeleteView
 
@@ -15,6 +18,10 @@ urlpatterns = [
     path('', views.student_list, name='student_list'),
     path('student/new/', views.StudentCreateView.as_view(), name='student_create'),
     path('student/<int:pk>/edit/', views.StudentUpdateView.as_view(), name='student_update'),
+
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    path('logout/', LogoutView.as_view(next_page=''), name='logout'),
+    path('register/', RegisterView.as_view(), name='register'),
 
 
     path('mymodel/', MyModelListView.as_view(), name='mymodel_list'),
