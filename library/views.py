@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from .forms import AuthorForm, BookForm
 from .models import Book, Author
 from django.views.generic import ListView, DetailView

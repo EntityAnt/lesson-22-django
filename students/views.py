@@ -53,13 +53,6 @@ class MyModelDeleteView(DeleteView):
     template_name = 'students/mymodel_confirm_delete.html'
     success_url = reverse_lazy('students:mymodel_list')
 
-
-class RegisterView(CreateView):
-    template_name = 'register.html'
-    form_class = CustomUserCreationForm
-    success_url = reverse_lazy('home')
-
-
 def about(request):
     return render(request, 'students/about.html')
 
