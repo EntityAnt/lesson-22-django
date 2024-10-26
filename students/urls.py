@@ -3,11 +3,10 @@ from django.urls import path
 
 from users.views import RegisterView
 from . import views
-from .views import MyModelCreateView, MyModelListView, MyModelDetailView, MyModelUpdateView, MyModelDeleteView
+from .views import MyModelCreateView, MyModelListView, MyModelDetailView, MyModelUpdateView, MyModelDeleteView, \
+    StudentListView, StudentCreateView, StudentUpdateView
 
 app_name = 'students'
-
-
 
 urlpatterns = [
     path('about/', views.about, name='about'),
@@ -15,14 +14,13 @@ urlpatterns = [
     path('example/', views.example_view, name='example'),
     path('index/', views.index, name='index'),
     path('student_detail/<int:student_id>', views.student_detail, name='student_detail'),
-    path('', views.student_list, name='student_list'),
-    path('student/new/', views.StudentCreateView.as_view(), name='student_create'),
-    path('student/<int:pk>/edit/', views.StudentUpdateView.as_view(), name='student_update'),
+    path('', StudentListView.as_view(), name='student_list'),
+    path('student/new/', StudentCreateView.as_view(), name='student_create'),
+    path('student/<int:pk>/edit/', StudentUpdateView.as_view(), name='student_update'),
 
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page=''), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
-
 
     path('mymodel/', MyModelListView.as_view(), name='mymodel_list'),
     path('mymodel/<int:pk>/', MyModelDetailView.as_view(), name='mymodel_detail'),

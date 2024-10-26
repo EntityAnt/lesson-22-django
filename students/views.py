@@ -1,6 +1,8 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from students.models import Student, MyModel
@@ -20,6 +22,44 @@ class StudentUpdateView(UpdateView):
     form_class = StudentForm
     template_name = 'students/student_form.html'
     success_url = reverse_lazy('students:student_list')
+
+
+class PromoteStudentView(LoginRequiredMixin, View):
+    def post(self, request, student_id):
+        student = get_object_or_404(Student, id=student_id)
+
+        if not request.user.has_perm('students.can_promote_student'):
+            return HttpResponseForbidden("У вас нет прав для перевода студента.")
+
+        # Логика перевода студента на следующий курс
+        # student.year = next_year(student.year)
+        student.save()
+
+        return redirect('students:student_list')
+
+
+class ExpelStudentView(LoginRequiredMixin, View):
+    def post(self, request, student_id):
+        student = get_object_or_404(Student, id=student_id)
+
+        if not request.user.has_perm('students.can_expel_student'):
+            return HttpResponseForbidden("У вас нет прав для исключения студента.")
+
+        # Логика исключения студента
+        student.delete()
+
+        return redirect('students:student_list')
+
+
+class StudentListView(LoginRequiredMixin, ListView):
+    model = Student
+    template_name = 'students/student_list.html'
+    context_object_name = 'students'
+
+    def get_queryset(self):
+        if not self.request.user.has_perm('students.view_student'):
+            return Student.objects.none()
+        return Student.objects.all()
 
 
 class MyModelCreateView(CreateView):
@@ -53,6 +93,7 @@ class MyModelDeleteView(DeleteView):
     template_name = 'students/mymodel_confirm_delete.html'
     success_url = reverse_lazy('students:mymodel_list')
 
+
 def about(request):
     return render(request, 'students/about.html')
 
@@ -84,9 +125,3 @@ def student_detail(request, student_id: int):
         'student': student,
     }
     return render(request, 'students/student_detail.html', context=context)
-
-
-def student_list(request):
-    students = Student.objects.all()
-    context = {'students': students}
-    return render(request, 'students/student_list.html', context)

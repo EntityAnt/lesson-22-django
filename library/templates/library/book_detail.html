@@ -5,11 +5,27 @@
 
 {% block content %}
 {% include 'library/header.html' %}
-<h2>{{ book.title }}</h2>
+<h3>{{ book.title }}</h3>
 <p>Автор: {{ book.author.first_name }} {{ book.author.last_name }}</p>
 <p>Дата публикации: {{ book.publication_date|date:"d M Y" }}</p>
 <p>Количество книг автора: {{ author_books_count }}</p>
 <a href="{% url 'library:book_edit' book.pk %}" class="btn btn-secondary">Редактировать</a>
 <a href="{% url 'library:book_delete' book.pk %}" class="btn btn-danger">Удалить</a>
 <a href="{% url 'library:books_list' %}" class="btn btn-primary">Вернуться к списку</a>
+
+{% if 'library.can_review_book' in perms %}
+<form action="{% url 'library:book_review' book.pk %}" method="post">
+    {% csrf_token%}
+    <textarea name="review"></textarea>
+    <button type="submit" class="btn btn-primary">Рецензировать</button>
+</form>
+{% endif %}
+
+{% if 'library.can_recommend_book' in perms %}
+<form action="{% url 'library:book_recommend' book.pk %}" method="post">
+    {% csrf_token%}
+    <button type="submit" class="btn btn-primary">Рекомендовать</button>
+</form>
+{% endif %}
+
 {% endblock %}
