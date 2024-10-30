@@ -39,6 +39,7 @@ class Student(models.Model):
 
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
+    birth_date = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     email = models.EmailField(verbose_name='Email')
     year = models.CharField(
         max_length=6,
@@ -60,3 +61,12 @@ class Student(models.Model):
             ('can_promote_student', 'Разрешение на перевод студента'),
             ('can_expel_student', 'Разрешение на отчисление студента'),
         ]
+
+
+class Grade(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='grades', verbose_name='Студент')
+    subject = models.CharField(max_length=100, verbose_name='Предмет')
+    score = models.FloatField()
+
+    def __str__(self):
+        return f'{self.subject}: {self.score}'

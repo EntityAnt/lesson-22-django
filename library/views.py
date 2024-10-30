@@ -1,5 +1,8 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.core.cache import cache
 
 from .forms import AuthorForm, BookForm
 from .models import Book, Author
@@ -7,6 +10,8 @@ from django.views.generic import ListView, DetailView, View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+from .services import BookService
 
 
 class AuthorCreateView(CreateView):
@@ -27,6 +32,13 @@ class AuthorListView(ListView):
     model = Author
     template_name = 'library/authors_list.html'
     context_object_name = 'authors'
+
+    def get_queryset(self):
+        queryset = cache.get('authors_queryset')
+        if not queryset:
+            queryset = super().get_queryset()
+            cache.set('authors_queryset', queryset, 60 * 15)  # Кешируем данные на 15 минут
+        return queryset
 
 
 class BookCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -62,8 +74,6 @@ class RecommendBookView(LoginRequiredMixin, View):
         return redirect('library:books_list', book_id=book_id)
 
 
-
-
 class BookUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Book
     form_class = BookForm
@@ -73,10 +83,12 @@ class BookUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_classes = 'library.change_book'
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class BooksListView(LoginRequiredMixin, ListView):
     model = Book
     template_name = 'library/books_list.html'
     context_object_name = 'books'
+
     # permission_classes = 'library.view_book'
 
     def get_queryset(self):
@@ -84,15 +96,19 @@ class BooksListView(LoginRequiredMixin, ListView):
         return queryset.filter(publication_date__year__gt=1900)
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class BookDetailView(LoginRequiredMixin, DetailView):
     model = Book
     template_name = 'library/book_detail.html'
     context_object_name = 'book'
-    permission_classes = 'library.view_book'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['author_books_count'] = Book.objects.filter(author=self.object.author).count()
+        book_id = self.object.id
+        # Добавляем в контекст средний рейтинг и статус популярности книги
+        context['average_rating'] = BookService.calculate_average_rating(book_id)
+        context['is_popular'] = BookService.is_popular(book_id)
         return context
 
 

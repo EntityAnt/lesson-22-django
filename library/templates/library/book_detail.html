@@ -8,7 +8,8 @@
 <h3>{{ book.title }}</h3>
 <p>Автор: {{ book.author.first_name }} {{ book.author.last_name }}</p>
 <p>Дата публикации: {{ book.publication_date|date:"d M Y" }}</p>
-<p>Количество книг автора: {{ author_books_count }}</p>
+<p>Средний рейтинг: {{ average_rating }}</p>
+<p>Популярная: {{ is_popular|yesno:"Да,Нет" }}</p>
 <a href="{% url 'library:book_edit' book.pk %}" class="btn btn-secondary">Редактировать</a>
 <a href="{% url 'library:book_delete' book.pk %}" class="btn btn-danger">Удалить</a>
 <a href="{% url 'library:books_list' %}" class="btn btn-primary">Вернуться к списку</a>

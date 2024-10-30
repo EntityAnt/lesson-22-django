@@ -4,7 +4,7 @@ from django.urls import path
 from users.views import RegisterView
 from . import views
 from .views import MyModelCreateView, MyModelListView, MyModelDetailView, MyModelUpdateView, MyModelDeleteView, \
-    StudentListView, StudentCreateView, StudentUpdateView
+    StudentListView, StudentCreateView, StudentUpdateView, StudentDetailView
 
 app_name = 'students'
 
@@ -13,10 +13,10 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('example/', views.example_view, name='example'),
     path('index/', views.index, name='index'),
-    path('student_detail/<int:student_id>', views.student_detail, name='student_detail'),
     path('', StudentListView.as_view(), name='student_list'),
     path('student/new/', StudentCreateView.as_view(), name='student_create'),
     path('student/<int:pk>/edit/', StudentUpdateView.as_view(), name='student_update'),
+    path('student/<int:pk>/', StudentDetailView.as_view(), name='student_detail'),
 
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page=''), name='logout'),

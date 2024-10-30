@@ -16,6 +16,7 @@
             {%if perms.students.can_expel_student%}
                 <button  class="btn btn-danger">Исключить студента</button>
             {%endif%}
+            <a href="{% url 'students:student_detail' student.pk %} "  class="btn btn-primary">Детали студента</a>
         </li>
     {% endfor %}
 </ul>

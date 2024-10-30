@@ -1,3 +1,5 @@
+from django.core.cache import cache
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseForbidden
@@ -7,13 +9,14 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from students.models import Student, MyModel
 from students.forms import StudentForm
+from students.services import StudentService
 from users.forms import CustomUserCreationForm
 
 
 class StudentCreateView(CreateView):
     model = Student
     form_class = StudentForm
-    template_name = 'students/student_form.html'
+    template_name = 'students/student_detail.html'
     success_url = reverse_lazy('students:student_list')
 
 
@@ -22,6 +25,22 @@ class StudentUpdateView(UpdateView):
     form_class = StudentForm
     template_name = 'students/student_form.html'
     success_url = reverse_lazy('students:student_list')
+
+
+class StudentDetailView(DetailView):
+    model = Student
+    template_name = 'students/student_detail.html'
+    context_object_name = 'student_detail'
+    success_url = reverse_lazy('students:student_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        student_id = self.object.id
+        context['full_name'] = StudentService.get_full_name(student_id)
+        context['average_grade'] = StudentService.calculate_average_grade(student_id)
+        context['has_passed'] = StudentService.has_passed(student_id)
+        context['year'] = self.object.year
+        return context
 
 
 class PromoteStudentView(LoginRequiredMixin, View):
@@ -117,11 +136,3 @@ def index(request):
         'student_year': student.get_year_display(),
     }
     return render(request, 'students/index.html', context=context)
-
-
-def student_detail(request, student_id: int):
-    student = Student.objects.get(id=student_id)
-    context = {
-        'student': student,
-    }
-    return render(request, 'students/student_detail.html', context=context)
